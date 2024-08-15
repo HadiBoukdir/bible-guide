@@ -1,6 +1,10 @@
 import os
 import pickle
-import torch
+try:
+    import torch
+    print(f"Torch version: {torch.__version__}")
+except ImportError as e:
+    print(f"Failed to import torch: {e}")
 from whoosh.index import create_in
 from whoosh.fields import Schema, TEXT, ID
 from sentence_transformers import SentenceTransformer
