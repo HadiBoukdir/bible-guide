@@ -1,10 +1,34 @@
 import os
+import subprocess
+import sys
 import pickle
-try:
-    import torch
-    print(f"Torch version: {torch.__version__}")
-except ImportError as e:
-    print(f"Failed to import torch: {e}")
+
+def install_and_import(package, import_as=None):
+    try:
+        if import_as:
+            globals()[import_as] = __import__(package)
+        else:
+            __import__(package)
+    except ImportError:
+        print(f"Package {package} not found. Installing...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+        print(f"Package {package} installed successfully.")
+        if import_as:
+            globals()[import_as] = __import__(package)
+        else:
+            __import__(package)
+
+# Check and install necessary packages
+install_and_import("torch")
+install_and_import("whoosh.index", "create_in")
+install_and_import("whoosh.fields", "Schema")
+install_and_import("whoosh.fields", "TEXT")
+install_and_import("whoosh.fields", "ID")
+install_and_import("sentence_transformers")
+install_and_import("pdfminer.high_level", "extract_text")
+
+# Now you can safely import these modules
+import torch
 from whoosh.index import create_in
 from whoosh.fields import Schema, TEXT, ID
 from sentence_transformers import SentenceTransformer
