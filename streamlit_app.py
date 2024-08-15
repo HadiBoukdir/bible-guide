@@ -26,6 +26,15 @@ from openai import OpenAI
 
 client = OpenAI()
 
+def run_preprocessing():
+    st.write("Running preprocessing script. This might take a while...")
+    result = subprocess.run([sys.executable, "preprocess_bible.py"], capture_output=True, text=True)
+    st.write(result.stdout)
+    if result.returncode != 0:
+        st.error(f"Preprocessing failed with error:\n{result.stderr}")
+        return False
+    return True
+
 # Semantic Search Function
 def semantic_search(query, corpus, corpus_embeddings):
     model = SentenceTransformer('paraphrase-MiniLM-L6-v2')
@@ -58,8 +67,9 @@ def main():
 
     # Check if preprocessed files exist
     if not os.path.exists(corpus_file) or not os.path.exists(embeddings_file):
-        st.error("Necessary files are missing. Please run the preprocessing script first.")
-        return
+        st.warning("Necessary files are missing. Running preprocessing...")
+        if not run_preprocessing():
+            st.stop()
 
     # Load precomputed data
     with open(corpus_file, "rb") as f:
