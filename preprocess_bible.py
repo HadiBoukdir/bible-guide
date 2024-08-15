@@ -29,7 +29,7 @@ install_and_import("pdfminer.high_level", "extract_text")
 
 # Now you can safely import these modules
 import torch
-from whoosh.index import create_in
+from whoosh.index import create_in, LockError
 from whoosh.fields import Schema, TEXT, ID
 from sentence_transformers import SentenceTransformer
 from pdfminer.high_level import extract_text
@@ -65,7 +65,15 @@ def create_index(bible_text):
     if not os.path.exists("indexdir"):
         os.mkdir("indexdir")
     ix = create_in("indexdir", schema)
-    writer = ix.writer()
+    
+    try:
+        writer = ix.writer()
+    except LockError:
+        # If a LockError occurs, try deleting the lock file and retrying
+        lock_file = os.path.join("indexdir", "MAIN_WRITELOCK")
+        if os.path.exists(lock_file):
+            os.remove(lock_file)
+            writer = ix.writer()  # Retry creating the writer after removing the lock file
 
     for verse, content in bible_text.items():
         writer.add_document(verse=verse, content=content)
