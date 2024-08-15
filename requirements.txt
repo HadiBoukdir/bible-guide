@@ -1,3 +1,4 @@
+--no-cache-dir
 altair==5.4.0
 annotated-types==0.7.0
 anyio==4.4.0
@@ -70,3 +71,5 @@ typing_extensions==4.12.2
 tzdata==2024.1
 urllib3==2.2.2
 Whoosh==2.7.4
+pdfminer.six==20240706
+
