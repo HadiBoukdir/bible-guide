@@ -79,7 +79,7 @@ def generate_embeddings(corpus):
     return embeddings
 
 def main():
-    # Extract text from PDF
+    # Extract text from the predefined local PDF
     bible_text = extract_text_from_pdf("bible-old-testament.pdf")
 
     if bible_text is None or len(bible_text) == 0:
