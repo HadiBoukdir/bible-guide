@@ -11,6 +11,8 @@ def install_and_import(package, import_as=None):
             __import__(package)
     except ImportError:
         print(f"Package {package} not found. Installing...")
+        if package == "pdfminer.high_level":
+            package = "pdfminer.six"  # Use the correct package name
         subprocess.check_call([sys.executable, "-m", "pip", "install", package])
         print(f"Package {package} installed successfully.")
         if import_as:
@@ -29,7 +31,7 @@ install_and_import("pdfminer.high_level", "extract_text")
 
 # Now you can safely import these modules
 import torch
-from whoosh.index import create_in, LockError
+from whoosh.index import create_in
 from whoosh.fields import Schema, TEXT, ID
 from sentence_transformers import SentenceTransformer
 from pdfminer.high_level import extract_text
