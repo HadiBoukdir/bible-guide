@@ -1,10 +1,28 @@
 import os
 import streamlit as st
+import subprocess
+import sys
+
+def install_and_import(package):
+    try:
+        __import__(package)
+    except ImportError:
+        st.write(f"Package {package} not found. Installing...")
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+        st.write(f"Package {package} installed successfully.")
+        __import__(package)
+
+# Check and install necessary packages
+install_and_import("torch")
+install_and_import("sentence_transformers")
+install_and_import("whoosh")
+install_and_import("openai")
+
+# Now you can safely import these modules
 from sentence_transformers import util, SentenceTransformer
 import torch
 import pickle
 from openai import OpenAI
-import subprocess 
 
 client = OpenAI()
 
